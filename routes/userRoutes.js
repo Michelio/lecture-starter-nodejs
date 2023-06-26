@@ -36,7 +36,38 @@ router.get(
   "/",
   (req, res, next) => {
     try {
-      const data = userService.getAllUsers(req);
+      const data = userService.getAllUsers();
+      res.status(200).data = data;
+    } catch (err) {
+      res.status(404).data = { error: true, message: err.message };
+    } finally {
+      next();
+    }
+  },
+  responseMiddleware
+);
+
+router.get(
+  "/:id",
+  (req, res, next) => {
+    try {
+      const data = userService.getUser(req.body.id);
+      res.status(200).data = data;
+    } catch (err) {
+      res.status(404).data = { error: true, message: err.message };
+    } finally {
+      next();
+    }
+  },
+  responseMiddleware
+);
+
+router.put(
+  "/:id",
+  updateUserValid,
+  (req, res, next) => {
+    try {
+      const data = userService.update(req.body);
       res.status(200).data = data;
     } catch (err) {
       res.status(404).data = { error: true, message: err.message };

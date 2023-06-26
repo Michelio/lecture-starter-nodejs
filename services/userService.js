@@ -26,25 +26,25 @@ class UserService {
     return userRepository.getAll();
   }
 
-  getUser(userData) {
-    const user = this.search(userData);
+  getUser(userId) {
+    const user = this.search({ id: userId });
 
     if (user) {
       return user;
     } else {
-      throw new Error("User doesn't exists");
+      throw new Error("User doesn't exists.");
     }
   }
 
   update(newUserData) {
-    const { id, email, phoneNumber } = newUserData;
-    const user = this.search({ email, phoneNumber });
+    const { id } = newUserData;
+    const user = this.search({ id });
 
-    if (!user) {
+    if (user) {
       const updatedUser = userRepository.update(id, newUserData);
       return updatedUser;
     } else {
-      throw new Error("User with that email or phone number already exists.");
+      throw new Error("User doesn't exists.");
     }
   }
 

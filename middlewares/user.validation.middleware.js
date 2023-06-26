@@ -10,35 +10,53 @@ const createErrorMessage = (message) => {
   };
 };
 
-const validateUser = (userData) => {
+const validateUser = (userData, isUpdate = false) => {
+  let hasProperty = false;
   Object.keys(userData).forEach((key) => {
     if (!USER.hasOwnProperty(key)) {
       return createErrorMessage(`Invalid property \'${key}\'.`);
+    } else {
+      hasProperty = true;
     }
   });
 
-  if (userData.hasOwnProperty("id")) {
+  if (!hasProperty && isUpdate) {
+    return createErrorMessage("Provide fields for update.");
+  }
+
+  if (userData.hasOwnProperty("id") && !isUpdate) {
     return createErrorMessage("You can't use id as a property.");
   }
 
-  if (userData.firstName?.length <= 0) {
-    return createErrorMessage("Invalid first name.");
+  if (!userData.firstName && !isUpdate) {
+    return createErrorMessage("First name is required.");
   }
 
-  if (userData.lastNameName?.length <= 0) {
-    return createErrorMessage("Invalid last name.");
+  if (!userData.lastName && !isUpdate) {
+    return createErrorMessage("Last name is required.");
   }
 
-  if (!userData.email?.match(EMAIL_REGEX)) {
-    return createErrorMessage("Invalid email address.");
+  if (!userData.email) {
+    if (!isUpdate) return createErrorMessage("Email address is required.");
+  } else {
+    if (!userData.email?.match(EMAIL_REGEX)) {
+      return createErrorMessage("Invalid email address.");
+    }
   }
 
-  if (!userData.phoneNumber?.match(PHONE_REGEX)) {
-    return createErrorMessage("Invalid phone number.");
+  if (!userData.phoneNumber) {
+    if (!isUpdate) return createErrorMessage("Phone number is required.");
+  } else {
+    if (!userData.phoneNumber?.match(PHONE_REGEX))
+      return createErrorMessage("Invalid phone number.");
   }
 
-  if (userData.password?.length < 3) {
-    return createErrorMessage("Invalid password.");
+  if (!userData.password) {
+    if (!isUpdate) return createErrorMessage("Password is required.");
+  } else {
+    if (userData.password?.length < 3) {
+      return createErrorMessage("Invalid password.");
+    }
   }
 };
 
@@ -61,8 +79,21 @@ const createUserValid = (req, res, next) => {
 };
 
 const updateUserValid = (req, res, next) => {
-  // TODO: Implement validatior for user entity during update
-  next();
+  const userData = req.body;
+
+  if (userData) {
+    const valid = validateUser(userData, true);
+    if (!!valid) {
+      res.status(400).json(valid);
+    } else {
+      res.status(200);
+      next();
+    }
+  } else {
+    res
+      .status(400)
+      .json(createErrorMessage("User entity to update isn't valid."));
+  }
 };
 
 export { createUserValid, updateUserValid };
