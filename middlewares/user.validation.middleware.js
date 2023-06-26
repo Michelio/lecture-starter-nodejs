@@ -1,14 +1,8 @@
 import { USER } from "../models/user.js";
+import { createErrorMessage } from "../utilities/errorMessage.js";
 
 const EMAIL_REGEX = /^[a-z0-9](\.?[a-z0-9]){5,30}@gmail\.com$/gi;
 const PHONE_REGEX = /^(\+380)\d{9}/g;
-
-const createErrorMessage = (message) => {
-  return {
-    error: true,
-    message,
-  };
-};
 
 const validateUser = (userData, isUpdate = false) => {
   let hasProperty = false;
@@ -16,16 +10,12 @@ const validateUser = (userData, isUpdate = false) => {
     if (!USER.hasOwnProperty(key)) {
       return createErrorMessage(`Invalid property \'${key}\'.`);
     } else {
-      hasProperty = true;
+      if (key !== "id") hasProperty = true;
     }
   });
 
-  if (!hasProperty && isUpdate) {
-    return createErrorMessage("Provide fields for update.");
-  }
-
-  if (userData.hasOwnProperty("id") && !isUpdate) {
-    return createErrorMessage("You can't use id as a property.");
+  if (!hasProperty) {
+    return createErrorMessage("Provide any properties.");
   }
 
   if (!userData.firstName && !isUpdate) {
