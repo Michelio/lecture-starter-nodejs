@@ -78,4 +78,19 @@ router.put(
   responseMiddleware
 );
 
+router.delete(
+  "/:id",
+  (req, res, next) => {
+    try {
+      const data = userService.delete(req.body.id);
+      res.status(200).data = data;
+    } catch (err) {
+      res.status(404).data = { error: true, message: err.message };
+    } finally {
+      next();
+    }
+  },
+  responseMiddleware
+);
+
 export { router };

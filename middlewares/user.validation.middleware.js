@@ -39,7 +39,7 @@ const validateUser = (userData, isUpdate = false) => {
   if (!userData.email) {
     if (!isUpdate) return createErrorMessage("Email address is required.");
   } else {
-    if (!userData.email?.match(EMAIL_REGEX)) {
+    if (!userData.email.match(EMAIL_REGEX)) {
       return createErrorMessage("Invalid email address.");
     }
   }
@@ -47,14 +47,14 @@ const validateUser = (userData, isUpdate = false) => {
   if (!userData.phoneNumber) {
     if (!isUpdate) return createErrorMessage("Phone number is required.");
   } else {
-    if (!userData.phoneNumber?.match(PHONE_REGEX))
+    if (!userData.phoneNumber.match(PHONE_REGEX))
       return createErrorMessage("Invalid phone number.");
   }
 
   if (!userData.password) {
     if (!isUpdate) return createErrorMessage("Password is required.");
   } else {
-    if (userData.password?.length < 3) {
+    if (userData.password.length < 3) {
       return createErrorMessage("Invalid password.");
     }
   }

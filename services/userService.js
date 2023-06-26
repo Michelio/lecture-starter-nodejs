@@ -49,7 +49,7 @@ class UserService {
   }
 
   delete(userId) {
-    const user = this.search({ userId });
+    const user = this.search({ id: userId });
 
     if (user) {
       return userRepository.delete(userId);
