@@ -1,6 +1,14 @@
 const responseMiddleware = (req, res, next) => {
-  // TODO: Implement middleware that returns result of the query
-  next();
+  console.log(res.statusCode);
+  switch (res.statusCode) {
+    case 200:
+    case 400:
+    case 404:
+      res.json(res.data);
+      break;
+    default:
+      break;
+  }
 };
 
 export { responseMiddleware };
