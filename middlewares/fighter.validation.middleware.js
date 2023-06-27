@@ -24,16 +24,34 @@ const validateFighter = (fighterData, isUpdate = false) => {
     return createErrorMessage("Add some properties.");
   }
 
-  fighterData.health = fighterData.health || 100;
+  if (!isUpdate) fighterData.health = fighterData.health || 100;
 
-  if (fighterData.health < 80 || fighterData.health > 120)
+  if (
+    fighterData.health &&
+    (typeof fighterData.health !== "number" ||
+      fighterData.health < 80 ||
+      fighterData.health > 120)
+  ) {
     return createErrorMessage("Invalid health value.");
+  }
 
-  if (fighterData.power < 1 || fighterData.power > 100)
+  if (
+    fighterData.power &&
+    (typeof fighterData.power !== "number" ||
+      fighterData.power < 1 ||
+      fighterData.power > 100)
+  ) {
     return createErrorMessage("Invalid power value.");
+  }
 
-  if (fighterData.defense < 1 || fighterData.defense > 10)
+  if (
+    fighterData.defense &&
+    (typeof fighterData.defense !== "number" ||
+      fighterData.defense < 1 ||
+      fighterData.defense > 10)
+  ) {
     return createErrorMessage("Invalid defense value.");
+  }
 };
 
 const createFighterValid = (req, res, next) => {
