@@ -50,7 +50,7 @@ router.get(
   "/:id",
   (req, res, next) => {
     try {
-      const data = userService.getUser(req.body.id);
+      const data = userService.getUser(req.params.id);
       res.status(200).data = data;
     } catch (err) {
       res.status(404).data = createErrorMessage(err.message);
@@ -66,7 +66,7 @@ router.put(
   updateUserValid,
   (req, res, next) => {
     try {
-      const data = userService.update(req.body);
+      const data = userService.update(req.params.id, req.body);
       res.status(200).data = data;
     } catch (err) {
       res.status(404).data = createErrorMessage(err.message);
@@ -81,7 +81,7 @@ router.delete(
   "/:id",
   (req, res, next) => {
     try {
-      const data = userService.delete(req.body.id);
+      const data = userService.delete(req.params.id);
       res.status(200).data = data;
     } catch (err) {
       res.status(404).data = createErrorMessage(err.message);

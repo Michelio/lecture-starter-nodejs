@@ -1,51 +1,39 @@
 import { FIGHTER } from "../models/fighter.js";
 import { createErrorMessage } from "../utilities/errorMessage.js";
 
-const NAME_REGEX = /^[a-z]$/gi;
-
 const validateFighter = (fighterData, isUpdate = false) => {
-  let hasProperty = false;
-  Object.keys(fighterData).forEach((key) => {
-    if (!FIGHTER.hasOwnProperty(key)) {
-      return createErrorMessage(`Invalid property \'${key}\'.`);
-    } else {
-      if (key !== "id" && key !== "health") hasProperty = true;
-    }
-  });
+  const fighterKeys = Object.keys(fighterData);
+  const modelKeys = Object.keys(FIGHTER);
 
-  if (!hasProperty) {
-    return createErrorMessage("Provide any properties.");
+  if (
+    !fighterKeys.every((key) => modelKeys.includes(key)) ||
+    (!modelKeys.every((key) => {
+      if (key === "id" || key === "health") return true;
+      return fighterKeys.includes(key);
+    }) &&
+      !isUpdate)
+  ) {
+    return createErrorMessage("Invalid properties.");
   }
 
-  if (!fighterData.name && !isUpdate) {
-    return createErrorMessage("Name is required.");
+  if (fighterData.id) {
+    return createErrorMessage("Id property is prohibited.");
   }
 
-  if (fighterData.health) {
-    if (
-      fighterData.health &&
-      (fighterData.health < 80 || fighterData.health > 120)
-    ) {
-      return createErrorMessage("Invalid health value provided.");
-    }
-  } else {
-    fighterData.health = 100;
+  if (fighterKeys.length < 1) {
+    return createErrorMessage("Add some properties.");
   }
 
-  if (!fighterData.power) {
-    if (!isUpdate) return createErrorMessage("Power is required.");
-  } else {
-    if (fighterData.power < 1 || fighterData.power > 100) {
-      return createErrorMessage("Invalid power value provided.");
-    }
-  }
+  fighterData.health = fighterData.health || 100;
 
-  if (!fighterData.defense) {
-    if (!isUpdate) return createErrorMessage("Defense is required.");
-  } else {
-    if (fighterData.defense < 1 || fighterData.defense > 10)
-      return createErrorMessage("Invalid defense value provided.");
-  }
+  if (fighterData.health < 80 || fighterData.health > 120)
+    return createErrorMessage("Invalid health value.");
+
+  if (fighterData.power < 1 || fighterData.power > 100)
+    return createErrorMessage("Invalid power value.");
+
+  if (fighterData.defense < 1 || fighterData.defense > 10)
+    return createErrorMessage("Invalid defense value.");
 };
 
 const createFighterValid = (req, res, next) => {

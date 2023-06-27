@@ -5,48 +5,38 @@ const EMAIL_REGEX = /^[a-z0-9](\.?[a-z0-9]){5,30}@gmail\.com$/gi;
 const PHONE_REGEX = /^(\+380)\d{9}/g;
 
 const validateUser = (userData, isUpdate = false) => {
-  let hasProperty = false;
-  Object.keys(userData).forEach((key) => {
-    if (!USER.hasOwnProperty(key)) {
-      return createErrorMessage(`Invalid property \'${key}\'.`);
-    } else {
-      if (key !== "id") hasProperty = true;
-    }
-  });
+  const userKeys = Object.keys(userData);
+  const modelKeys = Object.keys(USER);
 
-  if (!hasProperty) {
-    return createErrorMessage("Provide any properties.");
+  if (
+    !userKeys.every((key) => modelKeys.includes(key)) ||
+    (!modelKeys.every((key) => {
+      if (key === "id") return true;
+      return userKeys.includes(key);
+    }) &&
+      !isUpdate)
+  ) {
+    return createErrorMessage("Invalid properties.");
   }
 
-  if (!userData.firstName && !isUpdate) {
-    return createErrorMessage("First name is required.");
+  if (userData.id) {
+    return createErrorMessage("Id property is prohibited.");
   }
 
-  if (!userData.lastName && !isUpdate) {
-    return createErrorMessage("Last name is required.");
+  if (userKeys.length < 1) {
+    return createErrorMessage("Add some properties.");
   }
 
-  if (!userData.email) {
-    if (!isUpdate) return createErrorMessage("Email address is required.");
-  } else {
-    if (!userData.email.match(EMAIL_REGEX)) {
-      return createErrorMessage("Invalid email address.");
-    }
+  if (userData.email && !userData.email.match(EMAIL_REGEX)) {
+    return createErrorMessage("Invalid email address.");
   }
 
-  if (!userData.phoneNumber) {
-    if (!isUpdate) return createErrorMessage("Phone number is required.");
-  } else {
-    if (!userData.phoneNumber.match(PHONE_REGEX))
-      return createErrorMessage("Invalid phone number.");
+  if (userData.phoneNumber && !userData.phoneNumber.match(PHONE_REGEX)) {
+    return createErrorMessage("Invalid email address.");
   }
 
-  if (!userData.password) {
-    if (!isUpdate) return createErrorMessage("Password is required.");
-  } else {
-    if (userData.password.length < 3) {
-      return createErrorMessage("Invalid password.");
-    }
+  if (userData.password && userData.password.length < 3) {
+    return createErrorMessage("Invalid password length.");
   }
 };
 
