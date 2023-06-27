@@ -15,10 +15,9 @@ class UserService {
     const user = this.search({ email }) || this.search({ phoneNumber });
 
     if (!user) {
-      const newUser = userRepository.create(userData);
-      return newUser;
+      return userRepository.create(userData);
     } else {
-      throw new Error("User with that email or phone number already exists.");
+      throw new Error("User with this email or phone number already exists.");
     }
   }
 
@@ -48,8 +47,7 @@ class UserService {
     }
 
     if (newUser) {
-      const updatedUser = userRepository.update(id, newUserData);
-      return updatedUser;
+      return userRepository.update(id, newUserData);
     } else {
       throw new Error("User doesn't exists.");
     }
