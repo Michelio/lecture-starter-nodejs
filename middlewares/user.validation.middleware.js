@@ -35,7 +35,10 @@ const validateUser = (userData, isUpdate = false) => {
     return createErrorMessage("Invalid email address.");
   }
 
-  if (userData.password && userData.password.length < 3) {
+  if (
+    userData.password &&
+    (typeof userData.password !== "string" || userData.password.length < 3)
+  ) {
     return createErrorMessage("Invalid password length.");
   }
 };
