@@ -15,10 +15,9 @@ class FighterService {
     const fighter = this.search({ name });
 
     if (!fighter) {
-      const newFighter = fighterRepository.create(fighterData);
-      return newFighter;
+      return fighterRepository.create(fighterData);
     } else {
-      throw new Error("Fighter with that name already exists.");
+      throw new Error("Fighter with this name already exists.");
     }
   }
 
@@ -36,13 +35,17 @@ class FighterService {
     }
   }
 
-  update(newFighterData) {
-    const { id } = newFighterData;
-    const fighter = this.search({ id });
+  update(id, newFighterData) {
+    const newFighter = this.search({ id });
+    const { name } = newFighterData;
+    const fighter = this.search({ name });
 
     if (fighter) {
-      const updatedFighter = fighterRepository.update(id, newFighterData);
-      return updatedFighter;
+      throw new Error("Fighter with this name already exists.");
+    }
+
+    if (newFighter) {
+      return fighterRepository.update(id, newFighterData);
     } else {
       throw new Error("Fighter doesn't exists.");
     }

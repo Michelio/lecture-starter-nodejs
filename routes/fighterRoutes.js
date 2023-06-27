@@ -14,9 +14,7 @@ router.post(
   createFighterValid,
   (req, res, next) => {
     try {
-      const data = req.body;
-      data.name = data.name.toLowerCase();
-      const newFighter = fighterService.create(data);
+      const newFighter = fighterService.create(req.body);
       if (newFighter) {
         res.status(200).data = newFighter;
       } else {
@@ -52,7 +50,7 @@ router.get(
   "/:id",
   (req, res, next) => {
     try {
-      const data = fighterService.getFighter(req.body.id);
+      const data = fighterService.getFighter(req.params.id);
       res.status(200).data = data;
     } catch (err) {
       res.status(404).data = createErrorMessage(err.message);
@@ -68,9 +66,7 @@ router.put(
   updateFighterValid,
   (req, res, next) => {
     try {
-      const data = req.body;
-      if (data.name) data.name = data.name.toLowerCase();
-      const fighterData = fighterService.update(data);
+      const fighterData = fighterService.update(req.params.id, req.body);
       res.status(200).data = fighterData;
     } catch (err) {
       res.status(404).data = createErrorMessage(err.message);
@@ -85,7 +81,7 @@ router.delete(
   "/:id",
   (req, res, next) => {
     try {
-      const data = fighterService.delete(req.body.id);
+      const data = fighterService.delete(req.params.id);
       res.status(200).data = data;
     } catch (err) {
       res.status(404).data = createErrorMessage(err.message);

@@ -12,13 +12,12 @@ class UserService {
 
   create(userData) {
     const { email, phoneNumber } = userData;
-    const user = this.search({ email, phoneNumber });
+    const user = this.search({ email }) || this.search({ phoneNumber });
 
     if (!user) {
-      const newUser = userRepository.create(userData);
-      return newUser;
+      return userRepository.create(userData);
     } else {
-      throw new Error("User with that email or phone number already exists.");
+      throw new Error("User with this email or phone number already exists.");
     }
   }
 
@@ -26,8 +25,8 @@ class UserService {
     return userRepository.getAll();
   }
 
-  getUser(userId) {
-    const user = this.search({ id: userId });
+  getUser(id) {
+    const user = this.search({ id });
 
     if (user) {
       return user;
@@ -36,13 +35,19 @@ class UserService {
     }
   }
 
-  update(newUserData) {
-    const { id } = newUserData;
-    const user = this.search({ id });
+  update(id, newUserData) {
+    const newUser = this.search({ id });
+    const { email, phoneNumber } = newUserData;
+    const user = this.search({ email }) || this.search({ phoneNumber });
 
     if (user) {
-      const updatedUser = userRepository.update(id, newUserData);
-      return updatedUser;
+      throw new Error(
+        "User with provided email or phone number already exists."
+      );
+    }
+
+    if (newUser) {
+      return userRepository.update(id, newUserData);
     } else {
       throw new Error("User doesn't exists.");
     }
